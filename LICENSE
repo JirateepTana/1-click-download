@@ -1,0 +1,13 @@
+---
+
+## 🧪 Optional Next Steps
+
+- Add **logging with timestamps**
+- Add **uninstall mode**
+- Add **check for existing install**:
+
+```powershell
+if (choco list --local-only | Select-String $app) {
+    Write-Host "$app already installed. Skipping..." -ForegroundColor Blue
+}
+```
