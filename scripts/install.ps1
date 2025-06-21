@@ -44,6 +44,15 @@ $nodePath = "$installPath\node.exe"
 if (Test-Path $nodePath) {
     Write-Host "Node.js extracted successfully."
     & $nodePath -v
+
+    # Add to user PATH if not already present
+    $currentPath = [Environment]::GetEnvironmentVariable("Path", "User")
+    if (-not ($currentPath -split ";" | Where-Object { $_ -eq $installPath })) {
+        [Environment]::SetEnvironmentVariable("Path", "$currentPath;$installPath", "User")
+        Write-Host "Added $installPath to user PATH. Restart your terminal to use 'node' globally."
+    } else {
+        Write-Host "$installPath is already in user PATH."
+    }
 } else {
     Write-Error "Extraction failed. Node.js not found in $installPath"
 }
