@@ -40,6 +40,14 @@ if ($subfolder) {
 Remove-Item $zipPath -Force
 
 # Verify install
+$npmPath = "$installPath\npm.cmd"
+if (Test-Path $npmPath) {
+    Write-Host "npm is installed."
+    & $npmPath -v
+} else {
+    Write-Warning "npm is not found. Node.js may be incomplete."
+}
+
 $nodePath = "$installPath\node.exe"
 if (Test-Path $nodePath) {
     Write-Host "Node.js extracted successfully."
