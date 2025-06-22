@@ -1,0 +1,24 @@
+{
+  "name": "1-click-download",
+  "version": "1.0.0",
+  "description": "A simple PowerShell-based tool to install common developer tools with a single command.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JirateepTana/1-click-download.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JirateepTana/1-click-download/issues"
+  },
+  "homepage": "https://github.com/JirateepTana/1-click-download#readme",
+  "devDependencies": {
+    "electron": "^36.5.0"
+  }
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Node.js Installer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md space-y-6">
+        <h1 class="text-2xl font-semibold text-gray-800 text-center">Node.js Installer</h1>
+
+        <button onclick="installNode()"
+            class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-xl transition">
+            Install Node.js
+        </button>
+
+        <div class="bg-gray-900 text-green-400 font-mono text-sm rounded-lg p-4 h-40 overflow-y-auto" id="output">
+            Output will appear here...
+        </div>
+    </div>
+
+    <script>
+        function installNode() {
+            fetch('/install-node', { method: 'POST' })
+                .then(res => res.text())
+                .then(data => {
+                    document.getElementById('output').textContent = data;
+                })
+                .catch(err => {
+                    document.getElementById('output').textContent = 'Error: ' + err;
+                });
+        }
+    </script>
+</body>
+
+</html>

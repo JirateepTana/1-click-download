@@ -1,17 +1,28 @@
 # install-node.ps1
 
-# Set Node.js version and download URL
-$version = "v22.16.0"
-$zipUrl = "https://nodejs.org/dist/$version/node-$version-win-x64.zip"
+# Set installation path
+$installPath = "D:\nodejs"  # Change this if needed
 $zipPath = "$env:TEMP\nodejs.zip"
-$installPath = "D:\nodejs"  # Change this as needed
+
+# Get the latest LTS version info from Node.js distribution index
+Write-Host "Fetching latest LTS Node.js version..."
+$indexJson = Invoke-RestMethod -Uri "https://nodejs.org/dist/index.json"
+
+# Find latest LTS version (you can adjust this to use 'latest' instead of LTS if you want)
+$latest = $indexJson | Where-Object { $_.lts } | Select-Object -First 1
+$version = $latest.version  # e.g., "v22.2.0"
+
+Write-Host "Latest LTS version detected: $version"
+
+# Construct download URL
+$zipUrl = "https://nodejs.org/dist/$version/node-$version-win-x64.zip"
 
 # Ensure install directory exists
 if (-not (Test-Path $installPath)) {
     New-Item -ItemType Directory -Path $installPath | Out-Null
 }
 
-# Check if Node.js is already installed in the folder
+# Check if Node.js is already installed
 if (Test-Path "$installPath\node.exe") {
     Write-Host "Node.js is already installed at $installPath"
     & "$installPath\node.exe" -v
@@ -27,33 +38,32 @@ Write-Host "Extracting Node.js to $installPath"
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 [System.IO.Compression.ZipFile]::ExtractToDirectory($zipPath, $installPath)
 
-# Find the extracted subfolder
+# Move files if there's a subfolder
 $subfolder = Get-ChildItem -Path $installPath | Where-Object { $_.PSIsContainer } | Select-Object -First 1
-
 if ($subfolder) {
-    # Move all files from subfolder to $installPath
     Get-ChildItem -Path $subfolder.FullName | Move-Item -Destination $installPath -Force
     Remove-Item -Path $subfolder.FullName -Recurse -Force
 }
 
-# Remove ZIP
+# Cleanup
 Remove-Item $zipPath -Force
 
 # Verify install
-$npmPath = "$installPath\npm.cmd"
-if (Test-Path $npmPath) {
-    Write-Host "npm is installed."
-    & $npmPath -v
-} else {
-    Write-Warning "npm is not found. Node.js may be incomplete."
-}
-
 $nodePath = "$installPath\node.exe"
+$npmPath = "$installPath\npm.cmd"
+
 if (Test-Path $nodePath) {
-    Write-Host "Node.js extracted successfully."
+    Write-Host "Node.js installed successfully:"
     & $nodePath -v
 
-    # Add to user PATH if not already present
+    if (Test-Path $npmPath) {
+        Write-Host "npm version:"
+        & $npmPath -v
+    } else {
+        Write-Warning "npm not found!"
+    }
+
+    # Update user PATH if necessary
     $currentPath = [Environment]::GetEnvironmentVariable("Path", "User")
     if (-not ($currentPath -split ";" | Where-Object { $_ -eq $installPath })) {
         [Environment]::SetEnvironmentVariable("Path", "$currentPath;$installPath", "User")
@@ -62,5 +72,5 @@ if (Test-Path $nodePath) {
         Write-Host "$installPath is already in user PATH."
     }
 } else {
-    Write-Error "Extraction failed. Node.js not found in $installPath"
+    Write-Error "Installation failed. Node.js not found in $installPath"
 }
