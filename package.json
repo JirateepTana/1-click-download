@@ -5,7 +5,21 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
+    "dist": "electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "build": {
+     "asarUnpack": [
+    "scripts/**"
+  ],
+    "appId": "com.yourcompany.1clickdownload",
+    "productName": "1-Click Download",
+    "files": [
+      "**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
   },
   "repository": {
     "type": "git",
@@ -19,6 +33,7 @@
   },
   "homepage": "https://github.com/JirateepTana/1-click-download#readme",
   "devDependencies": {
-    "electron": "^36.5.0"
+    "electron": "^36.5.0",
+    "electron-builder": "^26.0.12"
   }
 }
