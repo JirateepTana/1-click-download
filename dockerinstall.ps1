@@ -2,7 +2,7 @@ Write-Host "Fetching latest Docker Desktop download URL..."
 
 # Official Docker Desktop download URL (always points to latest)
 $installerUrl = "https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe"
-$installerPath = "D:\DockerDesktopInstaller.exe"   # <-- Download to drive D
+$installerPath = "C:\DockerDesktopInstaller.exe"
 
 Write-Host "Downloading Docker Desktop from $installerUrl..."
 Invoke-WebRequest -Uri $installerUrl -OutFile $installerPath
