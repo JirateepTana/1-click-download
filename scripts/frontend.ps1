@@ -3,8 +3,9 @@ Add-Type -AssemblyName System.Windows.Forms
 # Create the form
 $form = New-Object System.Windows.Forms.Form
 $form.Text = "1-Click Installer"
-$form.Size = New-Object System.Drawing.Size(400, 220)
+$form.Size = New-Object System.Drawing.Size(400, 280)
 $form.StartPosition = "CenterScreen"
+$form.MinimumSize = New-Object System.Drawing.Size(400, 280)
 
 # Checkbox for Node.js
 $checkboxNode = New-Object System.Windows.Forms.CheckBox
@@ -17,8 +18,8 @@ $form.Controls.Add($checkboxNode)
 
 # Output TextBox
 $outputBox = New-Object System.Windows.Forms.TextBox
-$outputBox.Location = New-Object System.Drawing.Point(30, 30)
-$outputBox.Size = New-Object System.Drawing.Size(320, 140)  # Height leaves space for button
+$outputBox.Location = New-Object System.Drawing.Point(30, 110)
+$outputBox.Size = New-Object System.Drawing.Size(320, 100)
 $outputBox.Multiline = $true
 $outputBox.ScrollBars = "Vertical"
 $outputBox.ReadOnly = $true
@@ -27,16 +28,18 @@ $form.Controls.Add($outputBox)
 
 
 
-# Confirm Button
+# Confirm Button - Fixed at bottom right
 $button = New-Object System.Windows.Forms.Button
 $button.Text = "Confirm"
 $button.Size = New-Object System.Drawing.Size(90, 30)
-$button.Location = New-Object System.Drawing.Point(
-    $form.ClientSize.Width - $button.Width - 30,
-    $form.ClientSize.Height - $button.Height - 20
-)
+$button.Location = New-Object System.Drawing.Point(280, 210)
 $button.Anchor = "Bottom, Right"
+$button.TabStop = $true
+$button.TabIndex = 10
 $form.Controls.Add($button)
+
+# Adjust output box to not overlap with button
+$outputBox.Size = New-Object System.Drawing.Size(320, 95)  # Reduced height to ensure no overlap
 
 # Add Docker checkbox
 $checkboxDocker = New-Object System.Windows.Forms.CheckBox
@@ -56,6 +59,9 @@ $form.Controls.Add($checkboxMobaXterm)
 
 # Move output box down a bit to fit new checkbox
 $outputBox.Location = New-Object System.Drawing.Point(30, 110)
+
+# Adjust output box to not overlap with button
+$outputBox.Size = New-Object System.Drawing.Size(320, 95)  # Reduced height to ensure no overlap
 
 # Button click event
 $button.Add_Click({
