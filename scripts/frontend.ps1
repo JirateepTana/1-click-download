@@ -46,8 +46,16 @@ $checkboxDocker.Size = New-Object System.Drawing.Size(200, 30)
 $checkboxDocker.Checked = $false
 $form.Controls.Add($checkboxDocker)
 
-# Move output box down a bit
-$outputBox.Location = New-Object System.Drawing.Point(30, 90)
+# Add MobaXterm checkbox
+$checkboxMobaXterm = New-Object System.Windows.Forms.CheckBox
+$checkboxMobaXterm.Text = "Install MobaXterm"
+$checkboxMobaXterm.Location = New-Object System.Drawing.Point(30, 70)
+$checkboxMobaXterm.Size = New-Object System.Drawing.Size(200, 30)
+$checkboxMobaXterm.Checked = $false
+$form.Controls.Add($checkboxMobaXterm)
+
+# Move output box down a bit to fit new checkbox
+$outputBox.Location = New-Object System.Drawing.Point(30, 110)
 
 # Button click event
 $button.Add_Click({
@@ -88,7 +96,20 @@ $button.Add_Click({
                 }
             }
 
-            if (-not $checkboxNode.Checked -and -not $checkboxDocker.Checked) {
+            # MobaXterm install
+            if ($checkboxMobaXterm.Checked) {
+                $outputBox.AppendText("Starting MobaXterm installation...`r`n")
+                $mobaPath = Join-Path $scriptDir 'mobaxterminstall.ps1'
+                if (Test-Path $mobaPath) {
+                    $result = powershell -NoLogo -ExecutionPolicy Bypass -File $mobaPath
+                    $outputBox.AppendText([string]::Join("`r`n", $result))
+                }
+                else {
+                    $outputBox.AppendText("ERROR: mobaxterminstall.ps1 not found at $mobaPath`r`n")
+                }
+            }
+
+            if (-not $checkboxNode.Checked -and -not $checkboxDocker.Checked -and -not $checkboxMobaXterm.Checked) {
                 $outputBox.AppendText("Nothing selected to install.`r`n")
             }
         }
