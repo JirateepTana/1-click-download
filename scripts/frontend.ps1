@@ -57,8 +57,16 @@ $checkboxMobaXterm.Size = New-Object System.Drawing.Size(200, 30)
 $checkboxMobaXterm.Checked = $false
 $form.Controls.Add($checkboxMobaXterm)
 
+# Add Terraform checkbox
+$checkboxTerraform = New-Object System.Windows.Forms.CheckBox
+$checkboxTerraform.Text = "Install Terraform CLI"
+$checkboxTerraform.Location = New-Object System.Drawing.Point(30, 90)
+$checkboxTerraform.Size = New-Object System.Drawing.Size(200, 30)
+$checkboxTerraform.Checked = $false
+$form.Controls.Add($checkboxTerraform)
+
 # Move output box down a bit to fit new checkbox
-$outputBox.Location = New-Object System.Drawing.Point(30, 110)
+$outputBox.Location = New-Object System.Drawing.Point(30, 130)
 
 # Adjust output box to not overlap with button
 $outputBox.Size = New-Object System.Drawing.Size(320, 95)  # Reduced height to ensure no overlap
@@ -115,7 +123,20 @@ $button.Add_Click({
                 }
             }
 
-            if (-not $checkboxNode.Checked -and -not $checkboxDocker.Checked -and -not $checkboxMobaXterm.Checked) {
+            # Terraform install
+            if ($checkboxTerraform.Checked) {
+                $outputBox.AppendText("Starting Terraform CLI installation...`r`n")
+                $terraformPath = Join-Path $scriptDir 'terraforminstall.ps1'
+                if (Test-Path $terraformPath) {
+                    $result = powershell -NoLogo -ExecutionPolicy Bypass -File $terraformPath
+                    $outputBox.AppendText([string]::Join("`r`n", $result))
+                }
+                else {
+                    $outputBox.AppendText("ERROR: terraforminstall.ps1 not found at $terraformPath`r`n")
+                }
+            }
+
+            if (-not $checkboxNode.Checked -and -not $checkboxDocker.Checked -and -not $checkboxMobaXterm.Checked -and -not $checkboxTerraform.Checked) {
                 $outputBox.AppendText("Nothing selected to install.`r`n")
             }
         }
