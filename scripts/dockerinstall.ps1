@@ -1,3 +1,9 @@
+# Check if Docker is installed
+if (Get-Command "docker" -ErrorAction SilentlyContinue) {
+    Write-Host "Docker is already installed. Skipping installation."
+    exit
+}
+
 Write-Host "Fetching latest Docker Desktop download URL..."
 
 # Official Docker Desktop download URL (always points to latest)
