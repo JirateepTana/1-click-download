@@ -3,14 +3,54 @@ Add-Type -AssemblyName System.Windows.Forms
 # Create the form
 $form = New-Object System.Windows.Forms.Form
 $form.Text = "1-Click Installer"
-$form.Size = New-Object System.Drawing.Size(400, 280)
+$form.Size = New-Object System.Drawing.Size(450, 320)
 $form.StartPosition = "CenterScreen"
-$form.MinimumSize = New-Object System.Drawing.Size(400, 280)
+$form.MinimumSize = New-Object System.Drawing.Size(450, 320)
+
+# Create category selection section
+$categoryLabel = New-Object System.Windows.Forms.Label
+$categoryLabel.Text = "Quick Categories:"
+$categoryLabel.Location = New-Object System.Drawing.Point(30, 10)
+$categoryLabel.Size = New-Object System.Drawing.Size(100, 20)
+$categoryLabel.Font = New-Object System.Drawing.Font("Arial", 9, [System.Drawing.FontStyle]::Bold)
+$form.Controls.Add($categoryLabel)
+
+# DevOps category button
+$btnDevOps = New-Object System.Windows.Forms.Button
+$btnDevOps.Text = "DevOps"
+$btnDevOps.Location = New-Object System.Drawing.Point(140, 8)
+$btnDevOps.Size = New-Object System.Drawing.Size(60, 25)
+$btnDevOps.BackColor = [System.Drawing.Color]::LightBlue
+$form.Controls.Add($btnDevOps)
+
+# FullStack category button
+$btnFullStack = New-Object System.Windows.Forms.Button
+$btnFullStack.Text = "FullStack"
+$btnFullStack.Location = New-Object System.Drawing.Point(210, 8)
+$btnFullStack.Size = New-Object System.Drawing.Size(70, 25)
+$btnFullStack.BackColor = [System.Drawing.Color]::LightGreen
+$form.Controls.Add($btnFullStack)
+
+# Frontend category button
+$btnFrontend = New-Object System.Windows.Forms.Button
+$btnFrontend.Text = "Frontend"
+$btnFrontend.Location = New-Object System.Drawing.Point(290, 8)
+$btnFrontend.Size = New-Object System.Drawing.Size(70, 25)
+$btnFrontend.BackColor = [System.Drawing.Color]::LightCoral
+$form.Controls.Add($btnFrontend)
+
+# Clear All button
+$btnClearAll = New-Object System.Windows.Forms.Button
+$btnClearAll.Text = "Clear"
+$btnClearAll.Location = New-Object System.Drawing.Point(370, 8)
+$btnClearAll.Size = New-Object System.Drawing.Size(50, 25)
+$btnClearAll.BackColor = [System.Drawing.Color]::LightGray
+$form.Controls.Add($btnClearAll)
 
 # Checkbox for Node.js
 $checkboxNode = New-Object System.Windows.Forms.CheckBox
 $checkboxNode.Text = "Install Node.js"
-$checkboxNode.Location = New-Object System.Drawing.Point(30, 30)
+$checkboxNode.Location = New-Object System.Drawing.Point(30, 45)
 $checkboxNode.Size = New-Object System.Drawing.Size(200, 30)
 $checkboxNode.Checked = $true
 $form.Controls.Add($checkboxNode)
@@ -32,7 +72,7 @@ $form.Controls.Add($outputBox)
 $button = New-Object System.Windows.Forms.Button
 $button.Text = "Confirm"
 $button.Size = New-Object System.Drawing.Size(90, 30)
-$button.Location = New-Object System.Drawing.Point(280, 210)
+$button.Location = New-Object System.Drawing.Point(330, 255)
 $button.Anchor = "Bottom, Right"
 $button.TabStop = $true
 $button.TabIndex = 10
@@ -44,7 +84,7 @@ $outputBox.Size = New-Object System.Drawing.Size(320, 95)  # Reduced height to e
 # Add Docker checkbox
 $checkboxDocker = New-Object System.Windows.Forms.CheckBox
 $checkboxDocker.Text = "Install Docker Desktop"
-$checkboxDocker.Location = New-Object System.Drawing.Point(30, 50)
+$checkboxDocker.Location = New-Object System.Drawing.Point(30, 65)
 $checkboxDocker.Size = New-Object System.Drawing.Size(200, 30)
 $checkboxDocker.Checked = $false
 $form.Controls.Add($checkboxDocker)
@@ -52,7 +92,7 @@ $form.Controls.Add($checkboxDocker)
 # Add MobaXterm checkbox
 $checkboxMobaXterm = New-Object System.Windows.Forms.CheckBox
 $checkboxMobaXterm.Text = "Install MobaXterm"
-$checkboxMobaXterm.Location = New-Object System.Drawing.Point(30, 70)
+$checkboxMobaXterm.Location = New-Object System.Drawing.Point(30, 85)
 $checkboxMobaXterm.Size = New-Object System.Drawing.Size(200, 30)
 $checkboxMobaXterm.Checked = $false
 $form.Controls.Add($checkboxMobaXterm)
@@ -60,16 +100,65 @@ $form.Controls.Add($checkboxMobaXterm)
 # Add Terraform checkbox
 $checkboxTerraform = New-Object System.Windows.Forms.CheckBox
 $checkboxTerraform.Text = "Install Terraform CLI"
-$checkboxTerraform.Location = New-Object System.Drawing.Point(30, 90)
+$checkboxTerraform.Location = New-Object System.Drawing.Point(30, 105)
 $checkboxTerraform.Size = New-Object System.Drawing.Size(200, 30)
 $checkboxTerraform.Checked = $false
 $form.Controls.Add($checkboxTerraform)
 
+# Add VS Code checkbox
+$checkboxVSCode = New-Object System.Windows.Forms.CheckBox
+$checkboxVSCode.Text = "Install Visual Studio Code"
+$checkboxVSCode.Location = New-Object System.Drawing.Point(30, 125)
+$checkboxVSCode.Size = New-Object System.Drawing.Size(200, 30)
+$checkboxVSCode.Checked = $false
+$form.Controls.Add($checkboxVSCode)
+
 # Move output box down a bit to fit new checkbox
-$outputBox.Location = New-Object System.Drawing.Point(30, 130)
+$outputBox.Location = New-Object System.Drawing.Point(30, 160)
 
 # Adjust output box to not overlap with button
-$outputBox.Size = New-Object System.Drawing.Size(320, 95)  # Reduced height to ensure no overlap
+$outputBox.Size = New-Object System.Drawing.Size(380, 85)  # Reduced height to ensure no overlap
+
+# Category button click events
+$btnDevOps.Add_Click({
+        # DevOps: Docker, Terraform, MobaXterm, VS Code
+        $checkboxNode.Checked = $false
+        $checkboxDocker.Checked = $true
+        $checkboxMobaXterm.Checked = $true
+        $checkboxTerraform.Checked = $true
+        $checkboxVSCode.Checked = $true
+        $outputBox.AppendText("Selected DevOps category: Docker, Terraform, MobaXterm, VS Code`r`n")
+    })
+
+$btnFullStack.Add_Click({
+        # FullStack: Node.js, Docker, VS Code
+        $checkboxNode.Checked = $true
+        $checkboxDocker.Checked = $true
+        $checkboxMobaXterm.Checked = $false
+        $checkboxTerraform.Checked = $false
+        $checkboxVSCode.Checked = $true
+        $outputBox.AppendText("Selected FullStack category: Node.js, Docker, VS Code`r`n")
+    })
+
+$btnFrontend.Add_Click({
+        # Frontend: Node.js, VS Code
+        $checkboxNode.Checked = $true
+        $checkboxDocker.Checked = $false
+        $checkboxMobaXterm.Checked = $false
+        $checkboxTerraform.Checked = $false
+        $checkboxVSCode.Checked = $true
+        $outputBox.AppendText("Selected Frontend category: Node.js, VS Code`r`n")
+    })
+
+$btnClearAll.Add_Click({
+        # Clear all selections
+        $checkboxNode.Checked = $false
+        $checkboxDocker.Checked = $false
+        $checkboxMobaXterm.Checked = $false
+        $checkboxTerraform.Checked = $false
+        $checkboxVSCode.Checked = $false
+        $outputBox.AppendText("Cleared all selections`r`n")
+    })
 
 # Button click event
 $button.Add_Click({
@@ -136,7 +225,20 @@ $button.Add_Click({
                 }
             }
 
-            if (-not $checkboxNode.Checked -and -not $checkboxDocker.Checked -and -not $checkboxMobaXterm.Checked -and -not $checkboxTerraform.Checked) {
+            # VS Code install
+            if ($checkboxVSCode.Checked) {
+                $outputBox.AppendText("Starting VS Code installation...`r`n")
+                $vscodePath = Join-Path $scriptDir 'vscodeinstall.ps1'
+                if (Test-Path $vscodePath) {
+                    $result = powershell -NoLogo -ExecutionPolicy Bypass -File $vscodePath
+                    $outputBox.AppendText([string]::Join("`r`n", $result))
+                }
+                else {
+                    $outputBox.AppendText("ERROR: vscodeinstall.ps1 not found at $vscodePath`r`n")
+                }
+            }
+
+            if (-not $checkboxNode.Checked -and -not $checkboxDocker.Checked -and -not $checkboxMobaXterm.Checked -and -not $checkboxTerraform.Checked -and -not $checkboxVSCode.Checked) {
                 $outputBox.AppendText("Nothing selected to install.`r`n")
             }
         }
