@@ -7,13 +7,11 @@ if (-not $InstallPath) {
     exit 1
 }
 
-
 $zipPath = "$env:TEMP\nodejs.zip"
-Write-Output "Fetching latest LTS Node.js version..."
-$indexJson = Invoke-RestMethod -Uri "https://nodejs.org/dist/index.json"
-$latest = $indexJson | Where-Object { $_.lts } | Select-Object -First 1
-$version = $latest.version
-Write-Output "Latest LTS version detected: $version"
+
+# Specify a compatible LTS version explicitly
+$version = "v20.19.0"  # Replace with the desired LTS version
+Write-Output "Using specified Node.js version: $version"
 $zipUrl = "https://nodejs.org/dist/$version/node-$version-win-x64.zip"
 
 if (-not (Test-Path $InstallPath)) {
