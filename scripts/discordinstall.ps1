@@ -224,3 +224,4 @@ catch {
 }
 
 Write-Host "Discord installation script completed." -ForegroundColor Cyan
+
