@@ -315,15 +315,33 @@ $button.Add_Click({
         $button.Enabled = $false
         try {
             $outputBox.Clear()
-            $scriptPath = $MyInvocation.MyCommand.Path
-            if (-not $scriptPath) {
-                $scriptDir = Get-Location
+            
+            # Get the correct script directory
+            $scriptDir = if ($PSScriptRoot) {
+                $PSScriptRoot
+            }
+            elseif ($MyInvocation.MyCommand.Path) {
+                Split-Path -Parent $MyInvocation.MyCommand.Path
             }
             else {
-                $scriptDir = Split-Path -Parent $scriptPath
+                # Fallback to current directory
+                Get-Location
             }
-
+            
+            $outputBox.AppendText("Script directory: $scriptDir`r`n")
             $outputBox.AppendText("=== STARTING INSTALLATION IN PRIORITY ORDER ===`r`n`r`n")
+
+            # Determine correct PowerShell executable path
+            $powershellExe = if (Test-Path "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe") {
+                "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
+            }
+            elseif (Get-Command pwsh -ErrorAction SilentlyContinue) {
+                "pwsh"
+            }
+            else {
+                "powershell"
+            }
+            $outputBox.AppendText("Using PowerShell executable: $powershellExe`r`n`r`n")
 
             # TIER 1: CORE REQUIREMENTS (Must install first)
             $outputBox.AppendText("--- TIER 1: CORE REQUIREMENTS ---`r`n")
@@ -332,7 +350,7 @@ $button.Add_Click({
                 $outputBox.AppendText("Installing Node.js (Required for CLI tools)...`r`n")
                 $backendPath = Join-Path $scriptDir 'Backend.ps1'
                 if (Test-Path $backendPath) {
-                    $result = powershell -NoLogo -ExecutionPolicy Bypass -File $backendPath
+                    $result = & $powershellExe -NoLogo -ExecutionPolicy Bypass -File $backendPath
                     $outputBox.AppendText([string]::Join("`r`n", $result) + "`r`n")
                 }
                 else {
@@ -344,7 +362,7 @@ $button.Add_Click({
                 $outputBox.AppendText("Installing Git (Required for GitHub Desktop, SourceTree)...`r`n")
                 $gitPath = Join-Path $scriptDir 'gitinstall.ps1'
                 if (Test-Path $gitPath) {
-                    $result = powershell -NoLogo -ExecutionPolicy Bypass -File $gitPath
+                    $result = & $powershellExe -NoLogo -ExecutionPolicy Bypass -File $gitPath
                     $outputBox.AppendText([string]::Join("`r`n", $result) + "`r`n")
                 }
                 else {
@@ -359,7 +377,7 @@ $button.Add_Click({
                 $outputBox.AppendText("Installing Visual Studio Code...`r`n")
                 $vscodePath = Join-Path $scriptDir 'vscodeinstall.ps1'
                 if (Test-Path $vscodePath) {
-                    $result = powershell -NoLogo -ExecutionPolicy Bypass -File $vscodePath
+                    $result = & $powershellExe -NoLogo -ExecutionPolicy Bypass -File $vscodePath
                     $outputBox.AppendText([string]::Join("`r`n", $result) + "`r`n")
                 }
                 else {
@@ -371,7 +389,7 @@ $button.Add_Click({
                 $outputBox.AppendText("Installing Docker Desktop...`r`n")
                 $dockerPath = Join-Path $scriptDir 'dockerinstall.ps1'
                 if (Test-Path $dockerPath) {
-                    $result = powershell -NoLogo -ExecutionPolicy Bypass -File $dockerPath
+                    $result = & $powershellExe -NoLogo -ExecutionPolicy Bypass -File $dockerPath
                     $outputBox.AppendText([string]::Join("`r`n", $result) + "`r`n")
                 }
                 else {
@@ -386,7 +404,7 @@ $button.Add_Click({
                 $outputBox.AppendText("Installing Angular CLI...`r`n")
                 $angularPath = Join-Path $scriptDir 'angularcliinstall.ps1'
                 if (Test-Path $angularPath) {
-                    $result = powershell -NoLogo -ExecutionPolicy Bypass -File $angularPath
+                    $result = & $powershellExe -NoLogo -ExecutionPolicy Bypass -File $angularPath
                     $outputBox.AppendText([string]::Join("`r`n", $result) + "`r`n")
                 }
                 else {
@@ -398,7 +416,7 @@ $button.Add_Click({
                 $outputBox.AppendText("Installing Nest CLI...`r`n")
                 $nestPath = Join-Path $scriptDir 'nestcliinstall.ps1'
                 if (Test-Path $nestPath) {
-                    $result = powershell -NoLogo -ExecutionPolicy Bypass -File $nestPath
+                    $result = & $powershellExe -NoLogo -ExecutionPolicy Bypass -File $nestPath
                     $outputBox.AppendText([string]::Join("`r`n", $result) + "`r`n")
                 }
                 else {
@@ -410,7 +428,7 @@ $button.Add_Click({
                 $outputBox.AppendText("Installing Terraform CLI...`r`n")
                 $terraformPath = Join-Path $scriptDir 'terraforminstall.ps1'
                 if (Test-Path $terraformPath) {
-                    $result = powershell -NoLogo -ExecutionPolicy Bypass -File $terraformPath
+                    $result = & $powershellExe -NoLogo -ExecutionPolicy Bypass -File $terraformPath
                     $outputBox.AppendText([string]::Join("`r`n", $result) + "`r`n")
                 }
                 else {
@@ -425,7 +443,7 @@ $button.Add_Click({
                 $outputBox.AppendText("Installing MobaXterm...`r`n")
                 $mobaPath = Join-Path $scriptDir 'mobaxterminstall.ps1'
                 if (Test-Path $mobaPath) {
-                    $result = powershell -NoLogo -ExecutionPolicy Bypass -File $mobaPath
+                    $result = & $powershellExe -NoLogo -ExecutionPolicy Bypass -File $mobaPath
                     $outputBox.AppendText([string]::Join("`r`n", $result) + "`r`n")
                 }
                 else {
@@ -437,7 +455,7 @@ $button.Add_Click({
                 $outputBox.AppendText("Installing PuTTY...`r`n")
                 $puttyPath = Join-Path $scriptDir 'puttyinstall.ps1'
                 if (Test-Path $puttyPath) {
-                    $result = powershell -NoLogo -ExecutionPolicy Bypass -File $puttyPath
+                    $result = & $powershellExe -NoLogo -ExecutionPolicy Bypass -File $puttyPath
                     $outputBox.AppendText([string]::Join("`r`n", $result) + "`r`n")
                 }
                 else {
@@ -449,7 +467,7 @@ $button.Add_Click({
                 $outputBox.AppendText("Installing Postman...`r`n")
                 $postmanPath = Join-Path $scriptDir 'postmaninstall.ps1'
                 if (Test-Path $postmanPath) {
-                    $result = powershell -NoLogo -ExecutionPolicy Bypass -File $postmanPath
+                    $result = & $powershellExe -NoLogo -ExecutionPolicy Bypass -File $postmanPath
                     $outputBox.AppendText([string]::Join("`r`n", $result) + "`r`n")
                 }
                 else {
@@ -461,7 +479,7 @@ $button.Add_Click({
                 $outputBox.AppendText("Installing DBeaver...`r`n")
                 $dbeaverPath = Join-Path $scriptDir 'dbeaverinstall.ps1'
                 if (Test-Path $dbeaverPath) {
-                    $result = powershell -NoLogo -ExecutionPolicy Bypass -File $dbeaverPath
+                    $result = & $powershellExe -NoLogo -ExecutionPolicy Bypass -File $dbeaverPath
                     $outputBox.AppendText([string]::Join("`r`n", $result) + "`r`n")
                 }
                 else {
@@ -473,7 +491,7 @@ $button.Add_Click({
                 $outputBox.AppendText("Installing Zoom...`r`n")
                 $zoomPath = Join-Path $scriptDir 'zoominstall.ps1'
                 if (Test-Path $zoomPath) {
-                    $result = powershell -NoLogo -ExecutionPolicy Bypass -File $zoomPath
+                    $result = & $powershellExe -NoLogo -ExecutionPolicy Bypass -File $zoomPath
                     $outputBox.AppendText([string]::Join("`r`n", $result) + "`r`n")
                 }
                 else {
@@ -485,7 +503,7 @@ $button.Add_Click({
                 $outputBox.AppendText("Installing Discord...`r`n")
                 $discordPath = Join-Path $scriptDir 'discordinstall.ps1'
                 if (Test-Path $discordPath) {
-                    $result = powershell -NoLogo -ExecutionPolicy Bypass -File $discordPath
+                    $result = & $powershellExe -NoLogo -ExecutionPolicy Bypass -File $discordPath
                     $outputBox.AppendText([string]::Join("`r`n", $result) + "`r`n")
                 }
                 else {
@@ -500,7 +518,7 @@ $button.Add_Click({
                 $outputBox.AppendText("Installing SourceTree...`r`n")
                 $sourcetreePath = Join-Path $scriptDir 'sourcetreeinstall.ps1'
                 if (Test-Path $sourcetreePath) {
-                    $result = powershell -NoLogo -ExecutionPolicy Bypass -File $sourcetreePath
+                    $result = & $powershellExe -NoLogo -ExecutionPolicy Bypass -File $sourcetreePath
                     $outputBox.AppendText([string]::Join("`r`n", $result) + "`r`n")
                 }
                 else {
@@ -512,7 +530,7 @@ $button.Add_Click({
                 $outputBox.AppendText("Installing GitHub Desktop...`r`n")
                 $githubPath = Join-Path $scriptDir 'githubdesktopinstall.ps1'
                 if (Test-Path $githubPath) {
-                    $result = powershell -NoLogo -ExecutionPolicy Bypass -File $githubPath
+                    $result = & $powershellExe -NoLogo -ExecutionPolicy Bypass -File $githubPath
                     $outputBox.AppendText([string]::Join("`r`n", $result) + "`r`n")
                 }
                 else {
